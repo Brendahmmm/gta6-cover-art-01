@@ -1,0 +1,296 @@
+/* Neon Cover Studio — editor chrome (the poster itself is drawn on canvas). */
+
+@font-face {
+  font-family: "Anton";
+  src: url("fonts/Anton-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ink: #f2ecff;
+  --ink-dim: #b3a8cc;
+  --bg: #0d0a15;
+  --panel: #171224;
+  --panel-edge: #2c2342;
+  --accent-pink: #ff2d78;
+  --accent-cyan: #2ee6c8;
+  --accent-amber: #ffb340;
+  --chip: #221a33;
+  --chip-on: #3a2b5c;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- header ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--panel-edge);
+  background: linear-gradient(90deg, rgba(255, 45, 120, 0.14), rgba(46, 230, 200, 0.10) 55%, transparent);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+
+.brand-mark {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, var(--accent-pink) 0 45%, transparent 45%),
+    linear-gradient(225deg, var(--accent-cyan) 0 45%, transparent 45%),
+    #1c1530;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.brand h1 {
+  margin: 0;
+  font-family: "Anton", "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.brand p { margin: 1px 0 0; color: var(--ink-dim); font-size: 13px; }
+
+.export-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 22px;
+  font: 700 15px system-ui, sans-serif;
+  color: #14060d;
+  background: linear-gradient(90deg, var(--accent-pink), var(--accent-amber));
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(255, 45, 120, 0.35);
+}
+
+.export-btn:hover { filter: brightness(1.08); }
+.export-btn:active { transform: translateY(1px); }
+
+/* ---------- workspace ---------- */
+
+.workspace {
+  display: flex;
+  gap: 18px;
+  padding: 18px 22px;
+  flex: 1;
+  min-height: 0;
+  align-items: flex-start;
+}
+
+.stage {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.canvas-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(600px 300px at 20% 0%, rgba(255, 45, 120, 0.10), transparent 60%),
+    radial-gradient(600px 300px at 90% 100%, rgba(46, 230, 200, 0.10), transparent 60%),
+    #100b1c;
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+#posterCanvas {
+  max-width: 100%;
+  max-height: calc(100vh - 220px);
+  width: auto;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
+  cursor: grab;
+  touch-action: none;
+}
+
+#posterCanvas.dragging { cursor: grabbing; }
+
+.stage-hint {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+/* ---------- control rail ---------- */
+
+.controls {
+  width: 330px;
+  flex: none;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.control-group {
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.control-group h2 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.tray {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tray button {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+
+.tray button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tray button.assigned { border-color: var(--accent-cyan); }
+
+.row { display: flex; gap: 8px; }
+
+.file-btn,
+#fillAllBtn,
+#resetPanBtn {
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  background: var(--chip);
+  color: var(--ink);
+  padding: 8px 12px;
+  font: 600 13px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.file-btn:hover,
+#fillAllBtn:hover,
+#resetPanBtn:hover { background: var(--chip-on); }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip-row button {
+  border: 1px solid var(--panel-edge);
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--ink);
+  padding: 7px 13px;
+  font: 600 13px system-ui, sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.chip-row button.active {
+  background: var(--chip-on);
+  border-color: var(--accent-pink);
+  box-shadow: inset 0 0 0 1px var(--accent-pink);
+}
+
+.dot { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+.dot.sunset { background: linear-gradient(135deg, #ff9a3d, #ff2d78); }
+.dot.neon { background: linear-gradient(135deg, #ff2d78, #2ee6c8); }
+.dot.palms { background: linear-gradient(135deg, #2ee6a8, #1b6fb8); }
+.dot.chrome { background: linear-gradient(135deg, #e8e8e8, #555); }
+
+.field-label {
+  display: block;
+  margin: 10px 0 5px;
+  font-size: 12px;
+  color: var(--ink-dim);
+}
+
+.field-label:first-of-type { margin-top: 0; }
+
+input[type="text"] {
+  width: 100%;
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  background: #0f0b1a;
+  color: var(--ink);
+  padding: 9px 11px;
+  font: 500 14px system-ui, sans-serif;
+}
+
+input[type="text"]:focus { outline: 2px solid var(--accent-pink); outline-offset: 0; }
+
+input[type="range"] { width: 100%; accent-color: var(--accent-pink); }
+
+#posRow { margin-top: 12px; }
+
+.footnote {
+  padding: 10px 22px 14px;
+  color: var(--ink-dim);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ---------- cover-only shot mode ---------- */
+
+body.shot-cover { background: #000; }
+body.shot-cover .topbar,
+body.shot-cover .controls,
+body.shot-cover .footnote,
+body.shot-cover .stage-hint { display: none; }
+body.shot-cover .workspace { padding: 0; }
+body.shot-cover .stage { width: 100%; }
+body.shot-cover .canvas-wrap {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: #000;
+}
+body.shot-cover #posterCanvas {
+  max-height: 100vh;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .workspace { flex-direction: column; }
+  .controls { width: 100%; }
+}

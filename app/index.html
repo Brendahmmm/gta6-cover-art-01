@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Cover Studio — GTA-style cover art maker</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <div>
+      <h1>Neon Cover Studio</h1>
+      <p>Turn your photos into GTA-style cover art</p>
+    </div>
+  </div>
+  <button id="exportBtn" class="export-btn" type="button">Export PNG</button>
+</header>
+
+<main class="workspace">
+  <section class="stage" aria-label="Cover preview">
+    <div class="canvas-wrap">
+      <canvas id="posterCanvas" width="1920" height="1080"></canvas>
+    </div>
+    <p class="stage-hint">Click a panel to select it · drag to move its photo · scroll over it to zoom · click a photo below to fill the selected panel</p>
+  </section>
+
+  <aside class="controls" aria-label="Cover controls">
+    <section class="control-group">
+      <h2>Photos</h2>
+      <div id="tray" class="tray"></div>
+      <div class="row">
+        <label class="file-btn" for="fileInput">Add photos</label>
+        <input id="fileInput" type="file" accept="image/*" multiple hidden>
+        <button id="fillAllBtn" type="button">Fill all panels</button>
+      </div>
+    </section>
+
+    <section class="control-group">
+      <h2>Layout</h2>
+      <div id="layoutRow" class="chip-row">
+        <button type="button" data-layout="full">Full</button>
+        <button type="button" data-layout="duo">Duo</button>
+        <button type="button" data-layout="triptych">Triptych</button>
+        <button type="button" data-layout="mosaic">Mosaic</button>
+        <button type="button" data-layout="feature">Feature</button>
+      </div>
+    </section>
+
+    <section class="control-group">
+      <h2>Grade</h2>
+      <div id="gradeRow" class="chip-row">
+        <button type="button" data-grade="sunset"><span class="dot sunset"></span>Sunset</button>
+        <button type="button" data-grade="neon"><span class="dot neon"></span>Neon</button>
+        <button type="button" data-grade="palms"><span class="dot palms"></span>Palms</button>
+        <button type="button" data-grade="chrome"><span class="dot chrome"></span>Chrome</button>
+      </div>
+    </section>
+
+    <section class="control-group">
+      <h2>Size</h2>
+      <div id="sizeRow" class="chip-row">
+        <button type="button" data-size="square">Square · 1080×1080</button>
+        <button type="button" data-size="portrait">Portrait · 1080×1350</button>
+        <button type="button" data-size="wide">Wide · 1920×1080</button>
+      </div>
+    </section>
+
+    <section class="control-group">
+      <h2>Caption</h2>
+      <label class="field-label" for="titleInput">Title</label>
+      <input id="titleInput" type="text" maxlength="40" value="Sunset Heist" autocomplete="off">
+      <label class="field-label" for="subtitleInput">Subtitle</label>
+      <input id="subtitleInput" type="text" maxlength="40" value="Neon Nights · 2026" autocomplete="off">
+      <div id="posRow" class="chip-row">
+        <button type="button" data-pos="top">Title on top</button>
+        <button type="button" data-pos="bottom">Title at bottom</button>
+      </div>
+      <label class="field-label" for="titleScale">Title size</label>
+      <input id="titleScale" type="range" min="0.7" max="1.4" step="0.05" value="1">
+    </section>
+
+    <section class="control-group">
+      <h2>Selected panel</h2>
+      <label class="field-label" for="zoomRange">Zoom</label>
+      <input id="zoomRange" type="range" min="1" max="2.5" step="0.05" value="1">
+      <button id="resetPanBtn" type="button">Reset position</button>
+    </section>
+  </aside>
+</main>
+
+<footer class="footnote">Your photos never leave this machine — everything runs offline in your browser.</footer>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
